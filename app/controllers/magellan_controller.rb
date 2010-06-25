@@ -1,6 +1,10 @@
 # MagellanController - the navigatiest of all explorers
 
-if ENV["MAGELLAN_ON"]=="1"
+unless ENV['MAGELLAN_ON']=='1'
+  raise "MagellanController hit, but magellan not loaded. If you want to use magellan in #{RAILS_ENV}- place ENV['MAGELLAN_ON']='1' in config/environments/#{RAILS_ENV}.rb and restart"
+else
+
+require 'pp' rescue 'Magellan requires "pp" to work.'
 
 class MagellanController < ApplicationController
 #  unloadable # fixes copious errors per http://strd6.com/?p=250
@@ -9,11 +13,10 @@ class MagellanController < ApplicationController
   before_filter :route_id_to_action
 
   def index
-    # render :template => 'index'
+    render :template => 'magellan/console'
   end
 
   def console
-    # render :template => 'console'
   end
 
   private
@@ -51,7 +54,7 @@ class MagellanController < ApplicationController
 
   # Keeps you from needing a route for controller/action with no ID
   def route_id_to_action
-    case params[:id]
+    case params[:id] || params[:action]
       when "console"
       do_eval!
       render :action => 'console'
